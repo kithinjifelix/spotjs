@@ -1,28 +1,19 @@
 const merge = require("webpack-merge");
-const common = require("./webpack.config");
+const common = require("./webpack.common-deps");
 const webpack = require("webpack");
 const path = require("path");
 const APP_PATH = path.resolve(__dirname, "src");
-
-common.devServer.proxy = {
-  "/common/": {
-    target: "http://68.183.47.234:4702",
-    pathRewrite: { "^/common": "" }
-  }
-};
-
+const PUB_PATH = path.join(__dirname, "/../app/spot/commons");
 module.exports = merge(common, {
   mode: "production",
-
-  entry: path.join(APP_PATH, "config.js"),
+  entry: path.join(APP_PATH, "common-deps.js"),
   output: {
-    filename: "config.js",
-    library: "config",
-    libraryTarget: "amd",
-    path: path.resolve(__dirname, "spot")
+    filename: "common-deps.js",
+    path: PUB_PATH
   },
 
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       SERVICE_URL: JSON.stringify("68.183.47.234")
     })
